@@ -124,6 +124,31 @@ app.put("/articles/:id", (req, res) => {
         // Fill in your code here
 });
 
+
+app.delete("articles/:id", (req, res) => {
+    const articlesList = readJSONFile(); 
+    const articleId = req.params.id;
+    const articleIndex = '';
+    if (!articleId) {
+        res.status(404).json({message: 'article not found'});
+        return;
+    } 
+    articlesList.forEach((item, index) =>  {
+        if (item.id == articleId) {
+            articleIndex = index;
+        }
+    }) 
+    if (articleIndex === '') {
+        res.status(404).json({message: 'article not found'});
+         return;
+    }
+    const newArticleList = articlesList.filter(item => item.id != articleId);
+    writeJSONFile(newArticleList);
+    res.json({message: 'article has been deleted'});
+})
+
+
+
 // Reading function from db.json file
 function readJSONFile() {
     return JSON.parse(fs.readFileSync("db.json"))["articles"];
